@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Login</title>
+  <style>
+    body {
+        background-color: #ffffff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+        position: relative;
+    }
+
+    .back-button {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  text-decoration: none;
+  color: #ffffff; /* Changed to dark gray for visibility */
+  font-size: 16px;
+  font-weight: 500;
+  padding: 10px 18px;
+  background: #38A169;; /* Light gray solid background */
+  border-radius: 10px;
+  border: 1px solid #05bc1b; /* Adds a border for visibility */
+  transition: background 0.3s ease, transform 0.2s ease-in-out;
+}
+
+.back-button:hover {
+  background: #CBD5E0; /* Slightly darker gray on hover */
+  transform: scale(1.05);
+}
+
+    .container {
+        width: 100%;
+        max-width: 32rem;
+        padding: 2rem;
+        background-color: white;
+        border-radius: 1.5rem;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        transition: transform 0.5s ease-in-out;
+    }
+
+    .container:hover {
+        transform: scale(1.05);
+    }
+
+    h2 {
+        font-size: 2.25rem;
+        font-weight: 800;
+        text-align: center;
+        color: #2d3748;
+    }
+
+    p {
+        text-align: center;
+        color: #a0aec0;
+        margin-top: 0.5rem;
+    }
+
+    input {
+        width: 100%;
+        padding: 1rem;
+        margin: 0.75rem 0;
+        border-radius: 1rem;
+        border: 1px solid #e2e8f0;
+        background-color: #f7fafc;
+        font-size: 1rem;
+        color: #4a5568;
+        outline: none;
+        box-sizing: border-box;
+        transition: all 0.3s ease;
+    }
+
+    input:focus {
+        border-color: #3182ce;
+        background-color: #edf2f7;
+    }
+
+    .buttons {
+        margin-top: 2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .button {
+        display: block;
+        width: 90%;
+        text-align: center;
+        padding: 1rem 2rem;
+        font-weight: 600;
+        border-radius: 1rem;
+        text-decoration: none;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, background 0.3s ease;
+    }
+
+    .button:hover {
+        transform: scale(1.05);
+    }
+
+    .admin-button {
+        background: linear-gradient(to right, #5a67d8, #2b6cb0);
+        color: white;
+    }
+
+    .student-button {
+        background: linear-gradient(to right, #48bb78, #38b2ac);
+        color: white;
+    }
+
+    .button:hover.admin-button {
+        background: linear-gradient(to right, #4c51bf, #2c5282);
+    }
+
+    .button:hover.student-button {
+        background: linear-gradient(to right, #38a169, #319795);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Back Button -->
+  <a href="frontpage.html" class="back-button">⬅ Back</a>
+
+  <div class="container">
+    <h2>Student Login</h2>
+    <form id="loginForm">
+      <input type="email" id="loginEmail" placeholder="Email" required>
+      <input type="password" id="loginPassword" placeholder="Password" required>
+      <div class="buttons">
+        <button type="submit" class="button student-button">Login</button>
+        <a href="forgot.html" class="button">Forgot Password?</a>
+        <a href="register.html" class="button">Register</a>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById("loginForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const email = document.getElementById("loginEmail").value;
+      const password = document.getElementById("loginPassword").value;
+
+      const storedUser = JSON.parse(localStorage.getItem("user"));
+
+      if (storedUser && storedUser.email === email && storedUser.password === password) {
+        
+        window.location.href = "goodluck.html"; 
+      } else {
+        alert("Invalid email or password.");
+      }
+    });
+  </script>
+</body>
+</html>

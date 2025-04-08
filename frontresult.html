@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Student Results</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+  <style>
+    :root {
+      --bg-color: #f8f9fa;
+      --sidebar-bg: #ffffff;
+      --sidebar-shadow: rgba(0, 0, 0, 0.1);
+      --text-color: #212529;
+      --subtext-color: #495057;
+      --button-gradient-start: #8fd19e;
+      --button-gradient-end: #64c788;
+      --button-hover-start: #7ec48f;
+      --button-hover-end: #5abf78;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      align-items: center;
+      height: 100vh;
+    }
+
+    h1 {
+      color: var(--text-color);
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 20px;
+    }
+
+    .back-button, .search-button, .download-button {
+      padding: 1rem 2rem;
+      font-weight: 600;
+      border-radius: 1rem;
+      background: linear-gradient(to right, var(--button-gradient-start), var(--button-gradient-end));
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.3s ease, background 0.3s ease;
+    }
+
+    .back-button:hover, .search-button:hover, .download-button:hover {
+      transform: scale(1.05);
+      background: linear-gradient(to right, var(--button-hover-start), var(--button-hover-end));
+    }
+
+    .back-button {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+    }
+
+    .download-button {
+      margin-top: 20px;
+    }
+
+    input[type="text"], select {
+      padding: 12px;
+      width: 220px;
+      border-radius: 30px;
+      border: 1px solid #ccc;
+      background-color: #fff;
+      font-size: 16px;
+      margin-bottom: 20px;
+      color: #333;
+      transition: border-color 0.3s ease;
+    }
+
+    input[type="text"]:focus, select:focus {
+      border-color: var(--button-gradient-start);
+      outline: none;
+    }
+
+    .result-container {
+      background-color: var(--sidebar-bg);
+      border: 1px solid var(--sidebar-shadow);
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 4px 8px var(--sidebar-shadow);
+      width: 80%;
+      text-align: left;
+      margin-top: 20px;
+    }
+
+    .result-container h2 {
+      font-size: 20px;
+      margin-bottom: 10px;
+      color: var(--text-color);
+    }
+
+    .result-container table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    .result-container table th, .result-container table td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+
+    .result-container table th {
+      background-color: var(--sidebar-bg);
+      font-weight: bold;
+      color: var(--text-color);
+    }
+
+    .result-container .failed {
+      color: red;
+    }
+
+    .result-container .pass {
+      color: green;
+    }
+
+    .student-info, .total-info {
+      font-size: 16px;
+      color: var(--subtext-color);
+      margin-bottom: 20px;
+    }
+
+    .total-info {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Back Button -->
+  <a href="studentlogin.html">
+    <button class="back-button">⬅Back</button>
+  </a>
+
+  <h1>Student Results</h1>
+
+  <!-- Register No Search Input -->
+  <div class="search-bar">
+    <label for="registerNoSearch">Enter Register No:</label>
+    <input type="text" id="registerNoSearch" placeholder="Enter Register No">
+  </div>
+
+  <!-- Semester Dropdown -->
+  <div class="search-bar">
+    <label for="semesterSelect">Select Semester:</label>
+    <select id="semesterSelect">
+      <option value="all">All Semesters</option> <!-- ✅ Added All -->
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+      <option value="6">6</option>
+    </select>
+  </div>
+
+  <!-- Search Button -->
+  <button class="search-button" onclick="searchResults()">Search</button>
+
+  <!-- Download Button -->
+  <button class="download-button" onclick="downloadExcel()" style="display: none;">Download as Excel</button>
+
+  <div id="resultContainer" class="result-container" style="display:none;">
+    <!-- Student Information -->
+    <div class="student-info">
+      <p><strong>Student Name:</strong> <span id="studentName"></span></p>
+      <p><strong>Register No:</strong> <span id="registerNo"></span></p>
+      <p><strong>Semester:</strong> <span id="semester"></span></p>
+    </div>
+
+    <!-- Results Table -->
+    <table id="resultTable">
+      <thead>
+        <tr>
+          <th>Subjects</th>
+          <th>Internals Marks</th>
+          <th>Marks for Subjects</th>
+          <th>Total Max Marks</th>
+          <th>Credit</th>
+          <th>Credit Applied</th>
+          <th>Total Weighted</th>
+          <th>SGPA</th>
+          <th>CGPA</th>
+          <th>Percentage</th>
+          <th>Class</th>
+          <th>Result</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <!-- Total Information -->
+    <div class="total-info">
+      <p><strong>Total Marks:</strong> <span id="totalMarks"></span></p>
+      <p><strong>Result:</strong> <span id="finalResult"></span></p>
+      <p><strong>Percentage:</strong> <span id="finalPercentage"></span></p>
+      <p><strong>Class:</strong> <span id="finalClass"></span></p>
+    </div>
+  </div>
+
+<script>
+  function fetchResults() {
+    const registerNo = document.getElementById('registerNoSearch').value.trim();
+    const selectedSemester = document.getElementById('semesterSelect').value;
+
+    if (!registerNo) {
+      alert("Please enter a Register Number.");
+      return;
+    }
+
+    const results = JSON.parse(localStorage.getItem('studentResults')) || [];
+
+    const studentResults = results.filter(result => 
+      result.registerNo === registerNo && 
+      (selectedSemester === "all" || result.semester === selectedSemester)
+    );
+
+    const resultContainer = document.getElementById('resultContainer');
+    const resultTableBody = document.querySelector('#resultTable tbody');
+    const downloadButton = document.querySelector('.download-button');
+    const studentRegisterNo = document.getElementById('registerNo');
+    const studentSemester = document.getElementById('semester');
+    const studentName = document.getElementById('studentName');
+    const totalMarksElement = document.getElementById('totalMarks');
+    const finalResultElement = document.getElementById('finalResult');
+    const finalPercentageElement = document.getElementById('finalPercentage');
+    const finalClassElement = document.getElementById('finalClass');
+
+    resultTableBody.innerHTML = '';
+
+    if (studentResults.length > 0) {
+      // Set student details
+      studentRegisterNo.textContent = studentResults[0].registerNo;
+      studentSemester.textContent = selectedSemester === "all" ? "All" : studentResults[0].semester;
+      studentName.textContent = studentResults[0].studentName || "N/A";
+
+      studentResults.forEach(result => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${result.subjects}</td>
+          <td>${result.internalMarksForSubjects}</td>
+          <td>${result.marksForSubjects}</td>
+          <td>${result.totalMaxMarks}</td>
+          <td>${result.totalCredits}</td>
+          <td>${result.creditApplied}</td>
+          <td>${result.totalWeighted}</td>
+          <td>${result.sgpa}</td>
+          <td>${result.cgpa}</td>
+          <td>${result.percentage}%</td>
+          <td>${result.classification}</td>
+          <td class="${result.result === 'Pass' ? 'pass' : 'failed'}">${result.result}</td>`;
+        resultTableBody.appendChild(row);
+      });
+
+      // Just show data of first matched result in summary (or later enhance to average across semesters)
+      totalMarksElement.textContent = studentResults[0].totalMarks;
+      finalPercentageElement.textContent = studentResults[0].percentage + "%";
+      finalClassElement.textContent = studentResults[0].classification;
+      finalResultElement.textContent = studentResults[0].result;
+
+      resultContainer.style.display = "block";
+      downloadButton.style.display = "inline-block";
+    } else {
+      resultTableBody.innerHTML = `<tr><td colspan="12">No results found for the given criteria.</td></tr>`;
+      studentRegisterNo.textContent = "-";
+      studentSemester.textContent = "-";
+      studentName.textContent = "N/A";
+      totalMarksElement.textContent = "-";
+      finalPercentageElement.textContent = "-";
+      finalClassElement.textContent = "-";
+      finalResultElement.textContent = "-";
+      resultContainer.style.display = "block";
+      downloadButton.style.display = "none";
+    }
+  }
+
+  function searchResults() {
+    fetchResults();
+  }
+
+  function downloadExcel() {
+    const rows = [
+      ['Register No', 'Student Name', 'Semester', 'Subjects', 'Internals', 'Marks for Subjects', 'Credit', 'Credit Applied', 'Total Weighted', 'SGPA', 'CGPA', 'Percentage', 'Class', 'Result']
+    ];
+
+    const searchRegisterNo = document.getElementById("registerNoSearch").value.trim();
+    const selectedSemester = document.getElementById("semesterSelect").value;
+
+    const results = JSON.parse(localStorage.getItem('studentResults')) || [];
+
+    results.forEach(result => {
+      if ((selectedSemester === "all" || result.semester == selectedSemester) &&
+          (!searchRegisterNo || result.registerNo.includes(searchRegisterNo))) {
+        rows.push([
+          result.registerNo, result.studentName, result.semester, result.subjects, result.internalMarksForSubjects,
+          result.marksForSubjects, result.totalCredits, result.creditApplied, result.totalWeighted,
+          result.sgpa, result.cgpa, result.percentage + "%", result.classification, result.result
+        ]);
+      }
+    });
+
+    if (rows.length === 1) {
+      alert("No data available to download for the selected criteria.");
+      return;
+    }
+
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Results");
+
+    XLSX.writeFile(wb, `${searchRegisterNo || 'all'}_${selectedSemester}_results.xlsx`);
+  }
+</script>
+
+</body>
+</html>

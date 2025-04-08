@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Management</title>
+    <style>
+
+  /* Basic Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    color: #212529;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Header */
+header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+}
+
+/* Back Button */
+#backButton {
+    background: linear-gradient(135deg, #28a745, #218838);
+    color: #fff;
+    padding: 12px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s;
+    width: 10%;
+    margin-bottom: 10px;
+}
+
+#backButton:hover {
+    background: linear-gradient(135deg, #5ac45e, #3fa650);
+}
+
+/* Search Bar */
+#searchInput {
+    width: 25%;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 10px;
+    border: none;
+    background: rgba(255, 255, 255, 0.8);
+    color: #212529;
+    transition: 0.3s;
+    backdrop-filter: blur(10px);
+}
+
+#searchInput:focus {
+    outline: none;
+    border: 2px solid #28a745;
+}
+
+/* Form Styling */
+form {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    max-width: 100%;
+    border: 2px solid #28a745;
+}
+
+/* Title and Label Styling */
+h2, h3 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #343a40;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+/* Inputs and Selects */
+input, select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: none;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.8);
+    transition: 0.3s;
+    backdrop-filter: blur(10px);
+    color: #212529;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border: 2px solid #28a745;
+}
+
+/* Buttons (All Green) */
+button {
+    width: 50%;
+    background: linear-gradient(135deg, #28a745, #218838);
+    color: #fff;
+    border: none;
+    padding: 12px;
+    cursor: pointer;
+    border-radius: 10px;
+    font-weight: bold;
+    transition: 0.3s;
+    margin-bottom: 10px;
+}
+
+button:hover {
+    background: linear-gradient(135deg, #5ac45e, #3fa650);
+}
+
+/* Result Table */
+table {
+    width: 80%;
+    margin-top: 20px;
+    border-collapse: collapse;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    border: 2px solid #28a745;
+}
+
+th, td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+th {
+    background: rgba(248, 249, 250, 0.8);
+    color: #343a40;
+    font-weight: bold;
+}
+
+tr:hover {
+    background: rgba(255, 255, 255, 0.9);
+}
+
+</style>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.1/xlsx.full.min.js"></script>
+</head>
+<body>
+    <header>
+        <button id="backButton" onclick="window.location.href='dashboard.html'">⬅ Back</button>
+        <input type="text" id="searchInput" placeholder="Search students..." oninput="searchResults()">
+    </header>
+
+    <h2>Student Management</h2>
+    <form id="studentForm">
+        <label for="studentName">Student Name:</label>
+        <input type="text" id="studentName" name="studentName" required>
+
+        <label for="registerNo">Register No:</label>
+        <input type="text" id="registerNo" name="registerNo" required pattern="^\d{3}(CS|IS)\d{5}$" title="Register No should follow the pattern 'xxxCSxxxxx' or 'xxxISxxxxx'">
+
+
+        <label for="dob">Date of Birth:</label>
+        <input type="text" id="dob" name="dob" placeholder="DD-MM-YYYY" required>
+
+        <label for="gender">Gender:</label>
+        <select id="gender" name="gender" required>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+        </select>
+
+        <label for="semester">Semester:</label>
+        <select id="semester" name="semester" required>
+            <option value="1st Semester">1st Semester</option>
+            <option value="2nd Semester">2nd Semester</option>
+            <option value="3rd Semester">3rd Semester</option>
+            <option value="4th Semester">4th Semester</option>
+            <option value="5th Semester">5th Semester</option>
+            <option value="6th Semester">6th Semester</option>
+        </select>
+
+        <button type="submit">Add Student</button>
+    </form>
+
+    <h3>Student List</h3>
+    <label for="filterSemester">Filter by Semester:</label>
+    <select id="filterSemester">
+        <option value="">All Semesters</option>
+        <option value="1st Semester">1st Semester</option>
+        <option value="2nd Semester">2nd Semester</option>
+        <option value="3rd Semester">3rd Semester</option>
+        <option value="4th Semester">4th Semester</option>
+        <option value="5th Semester">5th Semester</option>
+        <option value="6th Semester">6th Semester</option>
+    </select>
+
+    <button id="clearDataBtn">Clear All Data</button>
+    <input type="file" id="excelFile" accept=".xlsx, .xls">
+
+    <table>
+        <thead>
+            <tr>
+                <th>SL No</th>
+                <th>Student Name</th>
+                <th>Register No</th>
+                <th>Date of Birth(DD-MM-YYYY)</th>
+                <th>Gender</th>
+                <th>Semester</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="studentTable"></tbody>
+    </table>
+
+    <button id="downloadExcel">Download Excel</button>
+
+    <script>
+        const studentForm = document.getElementById("studentForm");
+const studentTable = document.getElementById("studentTable");
+let studentCount = 0;
+
+window.onload = function () {
+    const students = JSON.parse(localStorage.getItem("students")) || [];
+    studentCount = students.length > 0 ? Math.max(...students.map(s => s.id)) : 0;
+    refreshTable();
+};
+
+studentForm.addEventListener("submit", function (event) {
+    event.preventDefault();
+    
+    const studentName = document.getElementById("studentName").value;
+    const registerNo = document.getElementById("registerNo").value;
+    const dob = document.getElementById("dob").value;
+    const gender = document.getElementById("gender").value;
+    const semester = document.getElementById("semester").value;
+
+    const formattedDob = formatDate(dob);
+
+    // Check if Register No already exists
+    const students = JSON.parse(localStorage.getItem("students")) || [];
+    const existingStudent = students.find(student => student.registerNo === registerNo);
+
+    if (existingStudent) {
+        alert("This Register No already exists. Please enter a unique Register No.");
+        return; // Don't add the student if the Register No already exists
+    }
+
+    // Creating student object
+    const student = {
+        id: ++studentCount,
+        name: studentName,
+        registerNo: registerNo,
+        dob: formattedDob,
+        gender: gender,
+        semester: semester,
+        status: "Active"
+    };
+
+    students.push(student);
+
+    // Sort students alphabetically by name
+    students.sort((a, b) => a.name.localeCompare(b.name));
+
+    // Save the sorted students back to localStorage
+    localStorage.setItem("students", JSON.stringify(students));
+    refreshTable();  // Refresh the table after adding the new student
+    studentForm.reset();  // Reset the form
+});
+
+function refreshTable() {
+    studentTable.innerHTML = "";
+    const students = JSON.parse(localStorage.getItem("students")) || [];
+
+    students.forEach((student, index) => addStudentToTable(student, index + 1));
+}
+
+function addStudentToTable(student, slNo) {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+        <td>${slNo}</td>
+        <td>${student.name}</td>
+        <td>${student.registerNo}</td>
+        <td>${student.dob}</td>
+        <td>${student.gender}</td>
+        <td>${student.semester}</td>
+        <td>${student.status}</td>
+        <td>
+            <button class="update-btn" onclick="updateStudent(${student.id})">Update</button>
+            <button class="delete-btn" onclick="deleteStudent(${student.id})">Delete</button>
+        </td>
+    `;
+    studentTable.appendChild(row);
+}
+
+function updateStudent(id) {
+    const students = JSON.parse(localStorage.getItem("students")) || [];
+    const student = students.find(s => s.id === id);
+
+    if (student) {
+        const newName = prompt("Enter new name:", student.name);
+        const newRegisterNo = prompt("Enter new Register No:", student.registerNo);
+        const newDob = prompt("Enter new Date of Birth:", student.dob);
+        const newGender = prompt("Enter new Gender:", student.gender);
+        const newSemester = prompt("Enter new Semester:", student.semester);
+
+        if (newName && newRegisterNo && newDob && newGender && newSemester) {
+            student.name = newName;
+            student.registerNo = newRegisterNo;
+            student.dob = formatDate(newDob);
+            student.gender = newGender;
+            student.semester = newSemester;
+
+            // Sort the students by name after updating
+            students.sort((a, b) => a.name.localeCompare(b.name));
+
+            localStorage.setItem("students", JSON.stringify(students));
+            refreshTable();
+        }
+    }
+}
+
+function deleteStudent(id) {
+    let students = JSON.parse(localStorage.getItem("students")) || [];
+    students = students.filter(s => s.id !== id);
+
+    localStorage.setItem("students", JSON.stringify(students));
+    refreshTable();
+}
+
+// Helper function to format the date of birth in a specific format (DD-MM-YYYY)
+function formatDate(dob) {
+    const date = new Date(dob);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
+}
+
+
+        filterSemester.addEventListener('change', refreshTable);
+
+        function formatDate(dateString) {
+    const datePattern = /^\d{2}-\d{2}-\d{4}$/;
+    
+    if (!datePattern.test(dateString)) {
+        alert("Invalid Date of Birth format. Please enter a valid date in the format DD-MM-YYYY.");
+        return "";
+    }
+
+    return dateString;
+}
+
+function formatExcelDate(date) {
+    const d = new Date((date - 25569) * 86400 * 1000);
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = d.getFullYear();
+    return `${day}-${month}-${year}`;
+}
+
+      
+
+        function refreshTable() {
+            studentTable.innerHTML = "";
+            const students = JSON.parse(localStorage.getItem("students")) || [];
+            const semesterFilter = filterSemester.value;
+
+            const filteredStudents = semesterFilter ? students.filter(student => student.semester === semesterFilter) : students;
+
+            filteredStudents.forEach((student, index) => addStudentToTable(student, index + 1));
+        }
+
+        function addStudentToTable(student, slNo) {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${slNo}</td>
+                <td>${student.name}</td>
+                <td>${student.registerNo}</td>
+                <td>${student.dob}</td>
+                <td>${student.gender}</td>
+                <td>${student.semester}</td>
+                <td>
+                    <select onchange="updateStatus(${student.id}, this.value)">
+                        <option value="Active" ${student.status === "Active" ? "selected" : ""}>Active</option>
+                        <option value="Inactive" ${student.status === "Inactive" ? "selected" : ""}>Inactive</option>
+                    </select>
+                </td>
+                <td>
+                    <button class="action-btn update-btn" onclick="updateStudent(${student.id})">Update</button>
+                    <button class="action-btn delete-btn" onclick="deleteStudent(${student.id})">Delete</button>
+                </td>
+            `;
+            studentTable.appendChild(row);
+        }
+
+        function updateStatus(id, status) {
+            const students = JSON.parse(localStorage.getItem("students")) || [];
+            const student = students.find(s => s.id === id);
+
+            if (student) {
+                student.status = status;
+                localStorage.setItem("students", JSON.stringify(students));
+            }
+        }
+
+        function updateStudent(id) {
+            const students = JSON.parse(localStorage.getItem("students")) || [];
+            const student = students.find(s => s.id === id);
+
+            if (student) {
+                const newName = prompt("Enter new name:", student.name);
+                const newRegisterNo = prompt("Enter new Register No (format xxxCSxxxxx or xxxISxxxxx only):", student.registerNo);
+                const dobPattern = /^\d{2}-\d{2}-\d{4}$/;  // Pattern for DD-MM-YYYY
+
+                let newDob = prompt("Enter new Date of Birth (DD-MM-YYYY):", student.dob);
+                
+                while (!dobPattern.test(newDob)) {
+                    alert("Invalid Date of Birth format. Please enter a valid date in the format DD-MM-YYYY.");
+                    return;
+                }
+
+                let newGender = prompt("Enter new Gender (Male or Female):", student.gender);
+                while (newGender !== "Male" && newGender !== "Female") {
+                    newGender = prompt("Invalid input. Enter Gender (Male or Female only):", student.gender);
+                }
+
+                const idPattern = /^\d{3}(CS|IS)\d{5}$/;
+                while (!idPattern.test(newRegisterNo)) {
+                    alert("Invalid Register No format. Please enter ID in the format xxxCSxxxxx or xxxISxxxxx.");
+                    return;
+                }
+
+                const newSemester = prompt("Enter new Semester:", student.semester);
+
+                if (newName && newRegisterNo && newDob && newGender && newSemester) {
+                    student.name = newName;
+                    student.registerNo = newRegisterNo;
+                    student.dob = newDob;
+                    student.gender = newGender;
+                    student.semester = newSemester;
+
+                    localStorage.setItem("students", JSON.stringify(students));
+                    refreshTable();
+                }
+            }
+        }
+
+        function deleteStudent(id) {
+            let students = JSON.parse(localStorage.getItem("students")) || [];
+            students = students.filter(s => s.id !== id);
+
+            localStorage.setItem("students", JSON.stringify(students));
+            refreshTable();
+        }
+
+        document.getElementById("clearDataBtn").addEventListener("click", function () {
+            if (confirm("Are you sure you want to clear all student data? This action cannot be undone.")) {
+                localStorage.removeItem("students");
+                refreshTable();
+                alert("All student data has been cleared.");
+            }
+        });
+
+        document.getElementById('excelFile').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    const data = new Uint8Array(event.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+
+                    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const students = XLSX.utils.sheet_to_json(sheet);
+
+                    students.forEach(student => {
+                        const newStudent = { 
+                            id: ++studentCount,
+                            name: student["Student Name"],
+                            registerNo: student["Register No"],
+                            dob: formatExcelDate(student["Date of Birth"].toString()),
+                            gender: student["Gender"],
+                            semester: student["Semester"],
+                            status: "Active"
+                        };
+
+                        const existingStudents = JSON.parse(localStorage.getItem("students")) || [];
+                        existingStudents.push(newStudent);
+                        localStorage.setItem("students", JSON.stringify(existingStudents));
+                    });
+
+                    refreshTable();
+                };
+
+                reader.readAsArrayBuffer(file);
+            }
+        });
+
+        document.getElementById("downloadExcel").addEventListener("click", function () {
+            const students = JSON.parse(localStorage.getItem("students")) || [];
+            const ws = XLSX.utils.json_to_sheet(students.map(student => ({
+                "Student Name": student.name,
+                "Register No": student.registerNo,
+                "Date of Birth": student.dob,
+                "Gender": student.gender,
+                "Semester": student.semester
+            })));
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Students");
+            XLSX.writeFile(wb, "Students.xlsx");
+        });
+
+        function searchResults() {
+            const query = searchInput.value.toLowerCase();
+            const rows = studentTable.querySelectorAll("tr");
+
+            rows.forEach(row => {
+                const cells = row.querySelectorAll("td");
+                const rowText = Array.from(cells).map(cell => cell.textContent.toLowerCase()).join(" ");
+                row.style.display = rowText.includes(query) ? "" : "none";
+            });
+        }
+
+        
+        
+    </script>
+</body>
+</html>

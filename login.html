@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login</title>
+
+  <!-- Google Font (Poppins) -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* Apply new font globally */
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background-color: #ffffff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* Back Button */
+    /* Back Button */
+.back-button {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  text-decoration: none;
+  color: #ffffff; /* Changed to dark gray for visibility */
+  font-size: 16px;
+  font-weight: 500;
+  padding: 10px 18px;
+  background: #38A169;; /* Light gray solid background */
+  border-radius: 10px;
+  border: 1px solid #05bc1b; /* Adds a border for visibility */
+  transition: background 0.3s ease, transform 0.2s ease-in-out;
+}
+
+.back-button:hover {
+  background: #CBD5E0; /* Slightly darker gray on hover */
+  transform: scale(1.05);
+}
+
+
+    /* Login Container */
+    .container {
+      background-color: #FFFFFF;
+      padding: 30px;
+      border-radius: 25px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+      width: 420px;
+      height: 350px;
+      text-align: center;
+      transition: transform 0.3s ease-in-out;
+    }
+
+    /* Hover Effect */
+    .container:hover {
+      transform: scale(1.03);
+    }
+
+    /* Title */
+    .title {
+      color: #1A202C;
+      font-size: 1.8rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      letter-spacing: 1px;
+    }
+
+    /* Input Fields */
+    .input-group {
+      text-align: left;
+      margin-bottom: 15px;
+    }
+
+    .input-group label {
+      display: block;
+      color: #1A202C;
+      font-weight: 400;
+      margin-bottom: 5px;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #4A5568;
+      border-radius: 15px;
+      background-color: #F7FAFC;
+      color: #4A5568;
+      font-size: 1rem;
+      outline: none;
+      font-family: 'Poppins', sans-serif;
+      transition: border 0.2s ease-in-out, transform 0.2s ease-in-out;
+    }
+
+    .input-group input:focus {
+      border: 2px solid #48BB78;
+      transform: scale(1.02);
+    }
+
+    /* Login Button */
+    .login-button {
+      width: 100%;
+      padding: 12px;
+      background-color: #48BB78;
+      color: #FFFFFF;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      transition: transform 0.2s ease-in-out, background 0.3s ease;
+      margin-top: 10px;
+    }
+
+    .login-button:hover {
+      transform: scale(1.05);
+      background-color: #38A169;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Back Button -->
+  <a href="frontpage.html" class="back-button">⬅ Back</a>
+
+  <div class="container">
+    <h2 class="title">Admin Login</h2> 
+
+    <div class="input-group">
+      <label for="username">Username</label>
+      <input type="text" id="username" placeholder="Enter Username">
+    </div>
+
+    <div class="input-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" placeholder="Enter Password">
+    </div>
+
+    <button class="login-button">Login</button>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      // Ensure users exist in localStorage
+      if (!localStorage.getItem("users")) {
+        const validUsers = [{ username: "yashwanth", password: "yash1234" }];
+        localStorage.setItem("users", JSON.stringify(validUsers));
+      }
+
+      // Attach event listener to login button
+      document.querySelector(".login-button").addEventListener("click", login);
+    });
+
+    function login() {
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      if (username === "" || password === "") {
+        alert("Please enter both username and password.");
+        return;
+      }
+
+      const users = JSON.parse(localStorage.getItem("users") || "[]");
+
+      const userExists = users.some(user => user.username === username && user.password === password);
+
+      if (userExists) {
+        window.location.href = "dashboard.html"; // Redirect to dashboard
+      } else {
+        alert("Invalid username or password.");
+      }
+    }
+  </script>
+
+</body>
+</html>

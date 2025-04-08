@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    color: #2d3748;
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 250px;
+    background-color: #ffffff;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    height: 100vh;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar h2 {
+    font-size: 1.5rem;
+    text-align: center;
+    margin-bottom: 30px;
+    color: #333;
+}
+
+.sidebar a {
+    display: block;
+    padding: 12px;
+    text-decoration: none;
+    color: #ffffff;
+    background: linear-gradient(to right, #4CAF50, #45A049);
+    border-radius: 10px;
+    text-align: center;
+    font-weight: bold;
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.sidebar a:hover {
+    transform: scale(1.05);
+    background: linear-gradient(to right, #388E3C, #2E7D32);
+}
+
+/* Main Content */
+.main-content {
+    flex-grow: 1;
+    padding: 40px;
+    text-align: center;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.main-content h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 30px;
+    color: #333;
+}
+
+/* Stats Blocks */
+.stats-container {
+    display: flex;
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.stat-box {
+    background: #ffffff;
+    color: #333;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    width: 250px;
+    text-align: center;
+    transition: transform 0.3s ease-in-out;
+}
+
+.stat-box:hover {
+    transform: scale(1.05);
+}
+
+.stat-box h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: #000;
+}
+
+.stat-box p {
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+/* Semester Selection */
+.semester-container {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+select {
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    outline: none;
+    background: #fff;
+}
+
+/* Subject Block */
+.subject-box {
+    background: #ffffff;
+    color: #333;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    width: 350px;
+    text-align: center;
+    margin-top: 20px;
+    display: none;
+}
+
+.subject-box h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: #000;
+}
+
+.subject-list {
+    list-style: none;
+    padding: 0;
+}
+
+.subject-list li {
+    font-size: 1.2rem;
+    margin: 5px 0;
+    font-weight: bold;
+}
+
+/* Logout Button */
+.logout-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 12px 24px;
+    font-weight: 600;
+    border-radius: 10px;
+    background: linear-gradient(to right, #ff6b6b, #ff4757);
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.logout-button:hover {
+    transform: scale(1.05);
+    background: linear-gradient(to right, #e63946, #c23616);
+}
+
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>Dashboard</h2>
+        <a href="student.html">Student</a>
+        <a href="mainblock.html">Updating Result</a>
+        <a href="update.html">Update Admin</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        
+        <h1>Student Result Management System</h1>
+        
+        <!-- Stats Blocks -->
+        <div class="stats-container">
+            <div class="stat-box">
+                <h2>Total Students</h2>
+                <p id="totalStudents">0</p>
+            </div>
+            <div class="stat-box">
+                <h2>Results Inserted</h2>
+                <p id="resultsInserted">0</p>
+            </div>
+        </div>
+
+        <!-- Semester Selection -->
+        <div class="semester-container">
+            <h2>Select Semester</h2>
+            <select id="semesterSelect" onchange="showSubjects()">
+                <option value="">Select Semester</option>
+                <option value="First Semester">First Semester</option>
+                <option value="Second Semester">Second Semester</option>
+                <option value="Third Semester">Third Semester</option>
+                <option value="Fourth Semester">Fourth Semester</option>
+                <option value="Fifth Semester">Fifth Semester</option>
+                <option value="Sixth Semester">Sixth Semester</option>
+            </select>
+        </div>
+
+        <!-- Subject Box -->
+        <div class="subject-box" id="subjectBox">
+            <h2>Subjects</h2>
+            <ul class="subject-list" id="subjectList"></ul>
+        </div>
+
+        <button class="logout-button" onclick="logout()">Logout</button>
+    </div>
+
+    <script>
+        function logout() {
+            alert("Logging out...");
+            window.location.href = "login.html"; // Redirect to login page
+        }
+        function loadStats() {
+        // Fetching student count from localStorage
+        const students = JSON.parse(localStorage.getItem("students")) || [];
+        document.getElementById("totalStudents").textContent = students.length;
+
+        // Fetching results count from localStorage
+        const results = JSON.parse(localStorage.getItem('studentResults')) || [];
+        document.getElementById("resultsInserted").textContent = results.length;
+    }
+        function showSubjects() {
+            const semesterSubjects = {
+            "First Semester": ["Engineering Mathematics-I", "Fundmentals of Computer", "Fundmentals of Electrical and Electronics Engg", "It Skills", "Environmental Science"],
+            "Second Semester": ["PMS", "Multi Media", "Communication Skills","Computer Aided Engg Graphics", "Statics & Analysis", "Kannada-I"],
+            "Third Semester": ["Python", "DBMS", "Multi Media", "Computer Networks", "Kannada-II"],
+            "Fourth Semester": ["Data Structures Python", "Object Oriented Programming & Design With Java", "Operating Systems", "Software Engineering", "IC"],
+            "Fifth Semester": ["Full Stack Development"],
+            "Sixth Semester": ["Intership/Project"]
+        };
+
+            const semester = document.getElementById("semesterSelect").value;
+            const subjectBox = document.getElementById("subjectBox");
+            const subjectList = document.getElementById("subjectList");
+
+            subjectList.innerHTML = "";
+            if (semester && semesterSubjects[semester]) {
+                semesterSubjects[semester].forEach(subject => {
+                    const li = document.createElement("li");
+                    li.textContent = subject;
+                    subjectList.appendChild(li);
+                });
+                subjectBox.style.display = "block";
+            } else {
+                subjectBox.style.display = "none";
+            }
+        }
+
+        window.onload = loadStats;
+    </script>
+
+</body>
+</html>

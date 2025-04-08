@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Result Management System</title>
+    <style>
+  :root {
+    --bg-color: #f8f9fa;
+    --sidebar-bg: #ffffff;
+    --sidebar-shadow: rgba(0, 0, 0, 0.1);
+    --text-color: #212529;
+    --subtext-color: #495057;
+    --button-gradient-start: #8fd19e;
+    --button-gradient-end: #64c788;
+    --button-hover-start: #7ec48f;
+    --button-hover-end: #5abf78;
+}
+
+body {
+    background-color: var(--bg-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    transition: background 0.3s ease-in-out;
+}
+
+.sidebar {
+    background-color: var(--sidebar-bg);
+    box-shadow: 0 4px 10px var(--sidebar-shadow);
+    padding: 1rem;
+    border-radius: 0.5rem;
+}
+
+.container {
+    width: 100%;
+    max-width: 32rem;
+    padding: 2rem;
+    background-color: var(--sidebar-bg);
+    border-radius: 1.5rem;
+    box-shadow: 0 10px 20px var(--sidebar-shadow);
+    transition: transform 0.5s ease-in-out, background 0.3s ease-in-out;
+    position: relative;
+}
+
+.container:hover {
+    transform: scale(1.05);
+}
+
+h2 {
+    font-size: 2.25rem;
+    font-weight: 800;
+    text-align: center;
+    color: var(--text-color);
+}
+
+p {
+    text-align: center;
+    color: var(--subtext-color);
+    margin-top: 0.5rem;
+}
+
+.buttons {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.button {
+    display: block;
+    width: 85%;
+    text-align: center;
+    padding: 1rem 2rem;
+    font-weight: 600;
+    border-radius: 1rem;
+    text-decoration: none;
+    box-shadow: 0 6px 12px var(--sidebar-shadow);
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.button:hover {
+    transform: scale(1.05);
+}
+
+.admin-button {
+    background: linear-gradient(to right, var(--button-gradient-start), var(--button-gradient-end));
+    color: white;
+}
+
+.student-button {
+    background: linear-gradient(to right, var(--button-gradient-start), var(--button-gradient-end));
+    color: white;
+}
+
+.button:hover.admin-button {
+    background: linear-gradient(to right, var(--button-hover-start), var(--button-hover-end));
+}
+
+.button:hover.student-button {
+    background: linear-gradient(to right, var(--button-hover-start), var(--button-hover-end));
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.5rem;
+    color: var(--text-color);
+    transition: color 0.3s ease-in-out;
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+        <h2>Student Result Management</h2>
+        <p>Secure & Efficient Portal</p>
+        <div class="buttons">
+            <a href="login.html" class="button admin-button">ADMIN LOGIN</a>
+            <a href="studentlogin.html" class="button student-button">STUDENT LOGIN</a>
+        </div>
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const body = document.body;
+            const themeToggle = document.querySelector('.theme-toggle');
+
+            if (body.classList.contains('light-theme')) {
+                body.classList.remove('light-theme');
+                themeToggle.textContent = '🌙';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                body.classList.add('light-theme');
+                themeToggle.textContent = '☀️';
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        // Load theme preference on page load
+        window.onload = function () {
+            const savedTheme = localStorage.getItem('theme');
+            const themeToggle = document.querySelector('.theme-toggle');
+
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-theme');
+                themeToggle.textContent = '☀️';
+            } else {
+                themeToggle.textContent = '🌙';
+            }
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Result Page</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
+    <style>
+ /* Basic Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #f9f9f9, #e6e6e6);
+    color: #333;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Fixed Back Button */
+.back-button {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: linear-gradient(135deg, #58a18c, #42b3c0);
+    color: #fff;
+    padding: 10px 15px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.back-button:hover {
+    background: linear-gradient(135deg, #70c2a2, #5acdd1);
+}
+
+/* Search Bar */
+.search-container {
+    flex: 1;
+    top: 20px;
+    display: flex;
+    justify-content: center;
+    margin-top: 90px;
+}
+
+.search-input {
+    width: 80%;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    background: rgba(255, 255, 255, 0.8);
+    color: #333;
+    transition: 0.3s;
+}
+
+.search-input:focus {
+    outline: none;
+    border: 2px solid #58a18c;
+}
+
+/* Download Button */
+.download-button {
+    width: 10%;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #58a18c, #42b3c0);
+    color: #fff;
+    padding: 10px 15px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.download-button:hover {
+    background: linear-gradient(135deg, #70c2a2, #5acdd1);
+}
+
+/* Main Container */
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 1200px;
+    margin-top: 50px;
+    align-items: center;
+}
+
+/* Semester Filter */
+.semester-filter-container {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    width: 40%;
+}
+
+.semester-filter-container select {
+    padding: 10px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    color: #333;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+
+/* Form Styling */
+form {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    max-width: 100%;
+    border: 2px solid #58a18c;
+}
+
+/* Title and Label Styling */
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #444;
+}
+
+input[type="date"],
+select,
+input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    color: #333;
+    transition: 0.3s;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border: 2px solid #58a18c;
+}
+
+/* Submit Button */
+button {
+    width: 100%;
+    background: linear-gradient(135deg, #58a18c, #42b3c0);
+    color: #fff;
+    border: none;
+    padding: 12px;
+    cursor: pointer;
+    border-radius: 10px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: linear-gradient(135deg, #70c2a2, #5acdd1);
+}
+
+/* Results Table */
+#resultsTable {
+    width: 80%;
+    margin-top: 20px;
+    border-collapse: collapse;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    overflow: hidden;
+    border: 2px solid #58a18c;
+}
+
+th, td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+th {
+    background: rgba(240, 240, 240, 0.8);
+    color: #222;
+    font-weight: bold;
+}
+
+tr:hover {
+    background: rgba(255, 255, 255, 0.6);
+}
+
+/* Delete Button */
+#resultTable td button {
+    background: linear-gradient(135deg, #58a18c, #42b3c0);
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    cursor: pointer;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+#resultTable td button:hover {
+    background: linear-gradient(135deg, #70c2a2, #5acdd1);
+}
+
+/* Fail Subject */
+.fail-subject {
+    background-color: #ff6b6b;
+    color: white;
+    font-weight: bold;
+    padding: 4px;
+    border-radius: 4px;
+}
+
+.fail {
+    color: red;
+    font-weight: bold;
+}
+
+    </style>
+</head>
+<body>
+    <div class="header-container">
+        <a href="dashboard.html" class="back-button">Back</a>
+        <div class="search-container">
+            <input type="text" id="search" class="search-input" placeholder="Search...">
+        </div>
+        <button class="download-button" onclick="downloadExcel()">Download Excel</button>
+    </div>
+    <!-- Semester Filter -->
+    <div class="semester-filter-container">
+        <label for="semesterFilter">Filter by Semester:</label>
+        <select id="semesterFilter" onchange="filterResults()">
+            <option value="">All Semesters</option>
+            <option value="1">1st Semester</option>
+            <option value="2">2nd Semester</option>
+            <option value="3">3rd Semester</option>
+            <option value="4">4th Semester</option>
+            <option value="5">5th Semester</option>
+            <option value="6">6th Semester</option>
+        </select>
+    </div>
+
+<div class="container">
+    <h2>Admin Result Entry</h2>
+    
+    <form id="resultForm">
+        <!-- Date and Student Name -->
+        <div class="form-group">
+            <label for="date">Date:</label>
+            <input type="date" id="date" name="date" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="student">Student Name:</label>
+            <select id="student" name="student" required>
+                <option value="" disabled selected>Select a student</option>
+                <!-- Dynamic student list will populate here -->
+            </select>
+        </div>
+        
+        <!-- Semester Selection -->
+        <div class="form-group">
+            <label for="semester">Semester:</label>
+            <select id="semester" name="semester" required>
+                <option value="">Select Semester</option>
+                <option value="1">1st Semester</option>
+                <option value="2">2nd Semester</option>
+                <option value="3">3rd Semester</option>
+                <option value="4">4th Semester</option>
+                <option value="5">5th Semester</option>
+                <option value="6">6th Semester</option>
+            </select>
+        </div>
+        
+        <!-- Subjects and Passing Marks -->
+        <div class="form-group">
+            <div id="subjectsList" class="subject-list">
+                <!-- Dynamically populated subjects will go here -->
+            </div>
+        </div>
+        
+        <!-- Σ(Ci × Gi) and SGPA/CGPA -->
+        <div class="form-group">
+            <label for="totalWeighted">Σ(Ci × Gi):</label>
+            <input type="number" id="totalWeighted" name="totalWeighted" disabled>
+        </div>
+        <div class="form-group">
+            <label for="cgpa">CGPA:</label>
+            <input type="number" id="cgpa" name="cgpa" disabled>
+        </div>
+        <div class="form-group">
+            <label for="sgpa">SGPA:</label>
+            <input type="number" id="sgpa" name="sgpa" disabled>
+        </div>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <!-- Results Table -->
+    <h3>Results Table</h3>
+    <table id="resultsTable">
+        <thead>
+            <tr>
+                <th>SL NO</th>
+<th>Register No</th>
+<th>Student Name</th>
+<th>Semester</th>
+<th>Subject</th>
+<th>Internal Marks</th>  
+<th>Marks Obtained</th>
+<th>Credits</th>
+<th>Credit Applied</th>
+<th>Σ(Ci × Gi)</th>
+<th>Total Marks</th>
+<th>Max Marks</th>
+<th>CGPA</th>
+<th>SGPA</th>
+<th>Percentage</th>
+<th>Class</th>
+<th>Grade Points</th>  <!-- New Column -->
+<th>Practical Grade Points</th>  <!-- New Column (for 5th Sem) -->
+<th>Result</th>
+<th>Action</th>
+
+
+
+
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Results will be added here dynamically -->
+        </tbody>
+    </table>
+</div>
+
+<script>
+    const subjectsData = {
+    "1": [
+        {"name": "Engineering Mathematics-I", "passingMarks": 20, "totalMarks": 50, "credits": 4},
+        {"name": "Fundamentals of Computer", "passingMarks": 20, "totalMarks": 50, "credits": 4},
+        {"name": "Fundamentals of Electrical and Electronics Engg", "passingMarks": 16, "totalMarks": 40, "credits": 4},
+        {"name": "IT Skills", "passingMarks": 16, "totalMarks": 40, "credits": 4},
+        {"name": "Environmental Science", "passingMarks": 0, "totalMarks": 60, "credits": 2, "internalOnly": true}
+    ],
+    "2": [
+        {"name": "PMS", "passingMarks": 20, "totalMarks": 50, "credits": 4},
+        {"name": "Communication Skills", "passingMarks": 16, "totalMarks": 40, "credits": 4},
+        {"name": "Computer Aided Engg Graphics", "passingMarks": 16, "totalMarks": 40, "credits": 4},
+        {"name": "Statics & Analysis", "passingMarks": 16, "totalMarks": 40, "credits": 4},
+        {"name": "Multi Media", "passingMarks": 16, "totalMarks": 40, "credits": 4},
+        {"name": "Kannada-I", "passingMarks": 0, "totalMarks": 60, "credits": 2, "internalOnly": true}
+    ],
+    "3": [
+        {"name": "Python", "passingMarks": 16, "totalMarks": 40, "credits": 6},
+        {"name": "DBMS", "passingMarks": 16, "totalMarks": 40, "credits": 6},
+        {"name": "Computer Hardware", "passingMarks": 16, "totalMarks": 40, "credits": 6},
+        {"name": "Computer Networks", "passingMarks": 16, "totalMarks": 40, "credits": 6},
+        {"name": "Kannada-II", "passingMarks": 0, "totalMarks": 60, "credits": 2, "internalOnly": true}
+    ],
+    "4": [
+        {"name": "Data Structures Python", "passingMarks": 16, "totalMarks": 40, "credits": 6},
+        {"name": "Object Oriented Programming & Design With Java", "passingMarks": 16, "totalMarks": 40, "credits": 6},
+        {"name": "Operating Systems", "passingMarks": 16, "totalMarks": 40, "credits": 6},
+        {"name": "Software Engineering", "passingMarks": 16, "totalMarks": 40, "credits": 6},
+        {"name": "IC", "passingMarks": 0, "totalMarks": 60, "credits": 2, "internalOnly": true}
+    ],
+    "5": [
+        {
+            "name": "Full Stack Development",
+            "passingMarks": 24,
+            "totalMarks": 60,
+            "credits": 24,
+            "practicalPassingMarks": 40,
+            "practicalTotalMarks": 100
+        }
+    ],
+    "6": [
+        {"name": "Internship/Project", "passingMarks": 64, "totalMarks":160, "credits": 16}
+    ]
+};
+let backlogs = {};
+
+document.getElementById('semester').addEventListener('change', function () {
+    const semester = this.value;
+    const subjectsList = document.getElementById('subjectsList');
+    subjectsList.innerHTML = '';
+
+    if (semester) {
+        let allSubjects = subjectsData[semester] || [];
+
+        if (backlogs[semester]) {
+            allSubjects.push(...backlogs[semester].filter(sub => 
+                !allSubjects.some(s => s.name === sub.name)
+            ));
+        }
+
+        allSubjects.forEach((subject) => {
+            const div = document.createElement('div');
+            div.classList.add('subject-item');
+
+            let inputFields = `
+                <label for="${subject.name}">${subject.name}</label>
+                <div>`;
+
+            if (subject.internalOnly) {
+                inputFields += `
+                    <input type="number" name="internal_marks_${subject.name}" id="internal_marks_${subject.name}" required step="1" min="0" max="50" placeholder="Internal Marks">
+                    <input type="number" name="credits_${subject.name}" id="credits_${subject.name}" required step="1" min="0" max="26" placeholder="Credits">
+                `;
+            } else {
+                inputFields += `
+                    <input type="number" name="marks_${subject.name}" id="marks_${subject.name}" required step="1" min="0" max="100" placeholder="Marks">
+                    <input type="number" name="internal_marks_${subject.name}" id="internal_marks_${subject.name}" required step="1" min="0" max="300" placeholder="Internal Marks">
+                    <input type="number" name="credits_${subject.name}" id="credits_${subject.name}" required step="1" min="0" max="26" placeholder="Credits">
+                `;
+            }
+
+            if ((semester === "5" && subject.practicalTotalMarks) || 
+    (semester === "6" && backlogs[6]?.some(sub => sub.name === subject.name && sub.type === "Practical Only"))) {
+    inputFields += `
+        <input type="number" name="practical_marks_${subject.name}" id="practical_marks_${subject.name}" required step="1" min="0" max="100" placeholder="Practical Marks">
+    `;
+}
+
+
+            inputFields += `</div>`;
+            div.innerHTML = inputFields;
+
+            if (backlogs[semester] && backlogs[semester].some(s => s.name === subject.name)) {
+                div.innerHTML += `<small style="color: red;">(Backlog Subject)</small>`;
+            }
+
+            subjectsList.appendChild(div);
+        });
+
+        // Add single Ci x Gi input field for the semester
+        const ciGiDiv = document.createElement('div');
+        ciGiDiv.innerHTML = `
+            <label for="ci_gi_semester">Total Ci x Gi</label>
+            <input type="number" name="ci_gi_semester" id="ci_gi_semester" required step="0.01" min="0" placeholder="Total Ci x Gi">
+        `;
+        subjectsList.appendChild(ciGiDiv);
+    }
+});
+
+
+
+    // Sample function to add a new student to local storage
+    function addStudentToLocalStorage(student) {
+        let students = JSON.parse(localStorage.getItem('students')) || [];
+        students.push(student);
+        localStorage.setItem('students', JSON.stringify(students));
+
+    }
+
+    // Function to populate the student dropdown
+    function populateStudentDropdown() {
+        const studentSelect = document.getElementById('student');
+        let students = JSON.parse(localStorage.getItem('students')) || [];
+        
+        students.forEach(student => {
+            const option = document.createElement('option');
+            option.value = student.registerNo;
+            option.textContent = `${student.name} (${student.registerNo})`;
+            studentSelect.appendChild(option);
+        });
+    }
+
+    // Call populateStudentDropdown on page load
+    window.onload = function() {
+        populateStudentDropdown();
+        loadStoredResults();
+    };
+
+    // Handle form submission for results
+    // Define Credit Applied values for each semester
+    const creditAppliedValues = {
+    1: 18,
+    2: 22,
+    3: 26,
+    4: 26,
+    5: 24,
+    6: 16
+};
+
+const semesterMaxMarks = { "1": 450, "2": 550, "3": 550, "4": 450, "5": 400, "6": 550 };
+
+function getGradePoint(marks, totalMarks) {
+    const percentage = (marks / totalMarks) * 100;
+    if (percentage >= 90) return 10;
+    if (percentage >= 80) return 9;
+    if (percentage >= 70) return 8;
+    if (percentage >= 60) return 7;
+    if (percentage >= 50) return 6;
+    if (percentage >= 45) return 5;
+    if (percentage >= 40) return 4;
+    return 0;
+}
+
+// Convert numerical grade point to letter grade
+function getLetterGrade(gradePoint) {
+    if (gradePoint === 10) return "A+";
+    if (gradePoint === 9) return "A";
+    if (gradePoint === 8) return "B+";
+    if (gradePoint === 7) return "B";
+    if (gradePoint === 6) return "C+";
+    if (gradePoint === 5) return "C";
+    if (gradePoint === 4) return "D";
+    return "F";  // Fail
+}
+
+// Handle form submission for results
+document.getElementById('resultForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const semester = document.getElementById('semester').value;
+    const studentSelect = document.getElementById('student');
+    const studentName = studentSelect.options[studentSelect.selectedIndex].text;
+    const registerNo = studentSelect.value;
+    const totalCiGi = parseFloat(document.getElementById('ci_gi_semester').value) || 0;
+    const creditApplied = creditAppliedValues[semester] || 0;
+
+    if (!semester || !registerNo || !totalCiGi) {
+        alert("Please fill all required fields!");
+        return;
+    }
+
+    const subjects = subjectsData[semester] || [];
+    let totalMarks = 0;
+    let totalCredits = 0;
+    let result = "Pass";
+    let failedSubjects = [];
+    let failedPracticalSubjects = [];
+
+    let marksForSubjects = [];
+    let internalMarksForSubjects = [];
+    let practicalMarksForSubjects = [];
+    let gradePointsForSubjects = [];
+    let practicalGradePointsForSubjects = [];
+
+    subjects.forEach((subject) => {
+        const internalMarks = parseInt(document.getElementById(`internal_marks_${subject.name}`)?.value, 10) || 0;
+        const credits = subject.credits;
+        let marks = 0;
+        let practicalMarks = 0;
+        let marksDisplay = "-";
+        let gradePoint = "-";
+        let practicalGradePoint = "-";
+
+        if (subject.internalOnly) {
+            gradePoint = getGradePoint(internalMarks, subject.totalMarks);
+        } else {
+            marks = parseInt(document.getElementById(`marks_${subject.name}`)?.value, 10) || 0;
+            marksDisplay = marks;
+            gradePoint = getGradePoint(marks, subject.totalMarks);
+
+            // Handling 5th Semester Practical Marks
+            if (semester === "5" && subject.practicalTotalMarks) {
+                practicalMarks = parseInt(document.getElementById(`practical_marks_${subject.name}`)?.value, 10) || 0;
+                marksDisplay = `${marks} + ${practicalMarks}`;
+                practicalGradePoint = getGradePoint(practicalMarks, subject.practicalTotalMarks);
+            }
+        }
+
+        totalMarks += marks + internalMarks + practicalMarks;
+        totalCredits += credits;
+
+        // Check for subject failure
+        if (!subject.internalOnly && marks < subject.passingMarks) {
+            result = "Fail";
+            failedSubjects.push(subject.name);
+        }
+
+        // Check for practical failure in 5th semester
+        if (semester === "5" && subject.practicalTotalMarks && practicalMarks < subject.passingMarks) {
+            result = "Fail";
+            failedPracticalSubjects.push(subject.name);
+        }
+
+        marksForSubjects.push(marksDisplay);
+        internalMarksForSubjects.push(internalMarks);
+        practicalMarksForSubjects.push(practicalMarks);
+        gradePointsForSubjects.push(getLetterGrade(gradePoint));
+        practicalGradePointsForSubjects.push(practicalGradePoint === "-" ? "-" : getLetterGrade(practicalGradePoint));
+    });
+
+    // Compute SGPA, CGPA, Percentage, and Classification
+    let sgpa = totalCiGi / creditApplied;
+    sgpa = Math.min(sgpa, 10);
+    let cgpa = sgpa;
+    let percentage = (cgpa - 0.75) * 10;
+    percentage = Math.min(percentage, 100).toFixed(2);
+    let classification = percentage >= 75 ? "Distinction" :
+                         percentage >= 60 ? "First Class" :
+                         percentage >= 50 ? "Second Class" :
+                         percentage >= 40 ? "Pass" : "Fail";
+
+    // Handle Backlogs
+    if (result === "Fail") {
+        const nextSemester = parseInt(semester) + 1;
+        if (!backlogs[nextSemester]) {
+            backlogs[nextSemester] = [];
+        }
+        
+        // Add failed theory subjects to backlog
+        failedSubjects.forEach(failedSubjectName => {
+            const failedSubject = subjectsData[semester].find(sub => sub.name === failedSubjectName);
+            if (failedSubject && !backlogs[nextSemester].some(sub => sub.name === failedSubject.name)) {
+                backlogs[nextSemester].push(failedSubject);
+            }
+        });
+
+        // Handle 5th semester practical failures
+        if (semester === "5") {
+            failedPracticalSubjects.forEach(failedSubjectName => {
+                const failedSubject = subjectsData[semester].find(sub => sub.name === failedSubjectName);
+                if (failedSubject && !backlogs[6].some(sub => sub.name === failedSubject.name)) {
+                    backlogs[6].push({
+                        ...failedSubject,
+                        type: "Practical Only" // Mark it as a practical backlog
+                    });
+                }
+            });
+        }
+    }
+
+    const newEntry = {
+        registerNo, studentName, semester, totalMarks,
+        totalMaxMarks: semesterMaxMarks[semester] || 0,
+        totalCredits, creditApplied,  
+        totalWeighted: totalCiGi.toFixed(2),
+        sgpa: sgpa.toFixed(2), cgpa: cgpa.toFixed(2),
+        percentage, classification, result,
+        marksForSubjects: marksForSubjects.join(', '),
+        internalMarksForSubjects: internalMarksForSubjects.join(', '),
+        practicalMarksForSubjects: practicalMarksForSubjects.join(', '),
+        gradePointsForSubjects: gradePointsForSubjects.join(', '),
+        practicalGradePointsForSubjects: practicalGradePointsForSubjects.join(', '),
+        subjects: subjects.map(subject => 
+            failedSubjects.includes(subject.name) ? `${subject.name} (Backlog)` : 
+            failedPracticalSubjects.includes(subject.name) ? `${subject.name} (Practical Backlog)` : 
+            subject.name
+        ).join(', ')
+    };
+
+    saveToLocalStorage(newEntry);
+    appendToTable(newEntry);
+    document.getElementById('resultForm').reset();
+});
+
+/**
+ * Function to dynamically load subjects into the semester form.
+ * If in the 6th semester, it includes 5th semester failed practical subjects.
+ */
+function populateSubjects(semester) {
+    const subjectsContainer = document.getElementById('subjectsContainer');
+    subjectsContainer.innerHTML = ''; // Clear previous inputs
+
+    let subjects = subjectsData[semester] || [];
+
+    // If semester is 6, add 5th semester practical backlogs
+    if (semester === "6" && backlogs[6]) {
+        backlogs[6].forEach(backlogSubject => {
+            if (backlogSubject.type === "Practical Only") {
+                subjects.push(backlogSubject); // Add failed practical subjects
+            }
+        });
+    }
+
+    subjects.forEach(subject => {
+        let subjectHTML = `
+            <div>
+                <label>${subject.name}</label>
+                ${subject.internalOnly ? '' : `<input type="number" id="marks_${subject.name}" placeholder="Theory Marks">`}
+                ${subject.practicalTotalMarks ? `<input type="number" id="practical_marks_${subject.name}" placeholder="Practical Marks">` : ''}
+            </div>
+        `;
+        subjectsContainer.innerHTML += subjectHTML;
+    });
+}
+
+function appendToTable(entry) {
+    const tableBody = document.getElementById('resultsTable').querySelector('tbody');
+    const rowCount = tableBody.rows.length + 1;
+    const row = document.createElement('tr');
+
+    row.innerHTML = `
+        <td>${rowCount}</td>
+        <td>${entry.registerNo}</td>
+        <td>${entry.studentName}</td>
+        <td>${entry.semester}</td>
+        <td>${entry.subjects}</td>
+        <td>${entry.internalMarksForSubjects}</td>
+        <td>${entry.marksForSubjects}</td>
+        <td>${entry.totalCredits}</td>
+        <td>${entry.creditApplied}</td>
+        <td>${entry.totalWeighted}</td>
+        <td>${entry.totalMarks}</td>
+        <td>${entry.totalMaxMarks}</td>
+        <td>${entry.cgpa}</td>
+        <td>${entry.sgpa}</td>
+        <td>${entry.percentage}%</td>
+        <td>${entry.classification}</td>
+        <td>${entry.gradePointsForSubjects}</td>
+        <td>${entry.practicalGradePointsForSubjects}</td>
+        <td class="${entry.result.toLowerCase() === 'pass' ? 'result' : 'fail'}">${entry.result}</td>
+        <td><button class="delete-btn" onclick="deleteRow(this, '${entry.registerNo}', '${entry.semester}')">Delete</button></td>
+    `;
+    tableBody.appendChild(row);
+}
+
+function saveToLocalStorage(entry) {
+    let results = JSON.parse(localStorage.getItem('studentResults')) || [];
+    results.push(entry);
+    localStorage.setItem('studentResults', JSON.stringify(results));
+}
+
+
+    function loadStoredResults() {
+        let results = JSON.parse(localStorage.getItem('studentResults')) || [];
+        results.forEach(appendToTable);
+    }
+
+    function deleteRow(btn, registerNo, semester) {
+        const row = btn.closest('tr');
+        row.remove();
+
+        let results = JSON.parse(localStorage.getItem('studentResults')) || [];
+        results = results.filter(result => result.registerNo !== registerNo || result.semester !== semester);
+        localStorage.setItem('studentResults', JSON.stringify(results));
+    }
+
+    function downloadExcel() {
+    const ws = XLSX.utils.table_to_sheet(document.getElementById('resultsTable'));
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Results');
+    XLSX.writeFile(wb, 'student_results.xlsx');
+}
+
+// Semester filter function
+function filterResults() {
+            const semesterFilter = document.getElementById('semesterFilter').value;
+            const rows = document.querySelectorAll('#resultsTable tbody tr');
+            rows.forEach(row => {
+                const semesterCell = row.cells[3].textContent; // Get the semester value from the table row
+                if (semesterFilter === "" || semesterCell === semesterFilter) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        }
+
+
+</script>
+</body>
+</html>
