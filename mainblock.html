@@ -6,7 +6,7 @@
     <title>Admin Result Page</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
     <style>
- /* Basic Reset */
+        /* Basic Reset */
 * {
     margin: 0;
     padding: 0;
@@ -15,7 +15,7 @@
 
 body {
     font-family: 'Arial', sans-serif;
-    background: linear-gradient(135deg, #f9f9f9, #e6e6e6);
+    background: linear-gradient(135deg,#f9f9f9, #e6e6e6 );
     color: #333;
     padding: 20px;
     display: flex;
@@ -26,29 +26,29 @@ body {
 
 /* Fixed Back Button */
 .back-button {
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    background: linear-gradient(135deg, #58a18c, #42b3c0);
-    color: #fff;
-    padding: 10px 15px;
-    border-radius: 6px;
-    text-decoration: none;
-    font-weight: bold;
-    transition: 0.3s;
-}
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: linear-gradient(135deg, #38a169, #319795);
+            color: #fff;
+            padding: 10px 15px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.3s;
+        }
 
-.back-button:hover {
-    background: linear-gradient(135deg, #70c2a2, #5acdd1);
-}
+        .back-button:hover {
+            background: linear-gradient(135deg, #4ec28d, #4cb6a6);
+        }
 
-/* Search Bar */
+        /* Search Bar */
 .search-container {
     flex: 1;
-    top: 20px;
+    top:20px;
     display: flex;
     justify-content: center;
-    margin-top: 90px;
+    margin-top: 90apx; /* Account for the fixed header */
 }
 
 .search-input {
@@ -56,46 +56,62 @@ body {
     padding: 10px;
     font-size: 16px;
     border-radius: 10px;
-    border: 1px solid #ccc;
+    border: #ccc;
     background: rgba(255, 255, 255, 0.8);
     color: #333;
     transition: 0.3s;
+    backdrop-filter: blur(10px);
 }
 
 .search-input:focus {
     outline: none;
-    border: 2px solid #58a18c;
+    border: 2px solid #38a169;
 }
 
-/* Download Button */
-.download-button {
-    width: 10%;
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: linear-gradient(135deg, #58a18c, #42b3c0);
-    color: #fff;
-    padding: 10px 15px;
-    border-radius: 6px;
-    text-decoration: none;
+/* Delete Button */
+#resultTable td button {
+    background: linear-gradient(135deg, #38a169, #319795);
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    cursor: pointer;
+    border-radius: 8px;
     font-weight: bold;
     transition: 0.3s;
 }
 
-.download-button:hover {
-    background: linear-gradient(135deg, #70c2a2, #5acdd1);
-}
+        /* Fixed Download Button */
+        .download-button {
+            width: 10%;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #38a169, #319795);
+            color: #fff;
+            padding: 10px 15px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.3s;
+        }
 
-/* Main Container */
-.container {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    width: 100%;
-    max-width: 1200px;
-    margin-top: 50px;
-    align-items: center;
-}
+        .download-button:hover {
+            background: linear-gradient(135deg, #38a169, #319795);
+        }
+
+        /* Container for main content */
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 1200px;
+            margin-top: 80px; /* To offset the fixed buttons */
+            align-items: center;
+        }
+
+
+
 
 /* Semester Filter */
 .semester-filter-container {
@@ -108,21 +124,34 @@ body {
 .semester-filter-container select {
     padding: 10px;
     border-radius: 10px;
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(252, 250, 250, 0.9);
     color: #333;
-    border: 1px solid #ccc;
+    border: #ccc;
     cursor: pointer;
+    backdrop-filter: blur(10px);
+}
+
+/* Main Container */
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 1200px;
+    margin-top: 50px; /* Adjust to accommodate the header */
+    align-items: center;
 }
 
 /* Form Styling */
 form {
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(248, 248, 248, 0.9);
+    backdrop-filter: blur(10px);
     padding: 20px;
     border-radius: 12px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     width: 400px;
     max-width: 100%;
-    border: 2px solid #58a18c;
+    border: 2px solid #38a169;
 }
 
 /* Title and Label Styling */
@@ -150,18 +179,19 @@ input[type="number"] {
     background: rgba(255, 255, 255, 0.9);
     color: #333;
     transition: 0.3s;
+    backdrop-filter: blur(10px);
 }
 
 input:focus, select:focus {
     outline: none;
-    border: 2px solid #58a18c;
+    border: 2px solid #38a169;
 }
 
 /* Submit Button */
 button {
     width: 100%;
-    background: linear-gradient(135deg, #58a18c, #42b3c0);
-    color: #fff;
+    background: linear-gradient(135deg, #38a169, #319795);
+    color: #0a0505;
     border: none;
     padding: 12px;
     cursor: pointer;
@@ -171,39 +201,43 @@ button {
 }
 
 button:hover {
-    background: linear-gradient(135deg, #70c2a2, #5acdd1);
+    background: linear-gradient(135deg, #4ec28d, #4cb6a6);
 }
 
-/* Results Table */
-#resultsTable {
+
+
+        /* Results Table Styling */
+        #resultsTable {
     width: 80%;
     margin-top: 20px;
     border-collapse: collapse;
     background: rgba(255, 255, 255, 0.9);
     border-radius: 10px;
     overflow: hidden;
-    border: 2px solid #58a18c;
+    backdrop-filter: blur(10px);
+    border: 2px solid #38a169;
 }
 
 th, td {
     padding: 12px;
     text-align: center;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.432);
 }
 
 th {
-    background: rgba(240, 240, 240, 0.8);
+    background: rgba(150, 149, 149, 0.925);
     color: #222;
     font-weight: bold;
 }
 
 tr:hover {
-    background: rgba(255, 255, 255, 0.6);
+    background: rgba(109, 107, 107, 0.6);
 }
+
 
 /* Delete Button */
 #resultTable td button {
-    background: linear-gradient(135deg, #58a18c, #42b3c0);
+    background: linear-gradient(135deg, #38a169, #319795);
     color: white;
     border: none;
     padding: 6px 10px;
@@ -214,23 +248,43 @@ tr:hover {
 }
 
 #resultTable td button:hover {
-    background: linear-gradient(135deg, #70c2a2, #5acdd1);
+    background: linear-gradient(135deg, #4ec28d, #4cb6a6);
 }
+
+.subject-item input[type="text"],
+.subject-item input[type="number"] {
+    padding: 8px 12px;
+    margin: 5px 5px 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 1px 1px 3px rgb(250, 244, 244);
+    outline: none;
+    transition: border 0.3s ease, box-shadow 0.3s ease;
+    width: 350px;
+}
+
+.subject-item input[type="text"]:focus,
+.subject-item input[type="number"]:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 6px rgba(0, 123, 255, 0.4);
+}
+
 
 /* Fail Subject */
+        
 .fail-subject {
-    background-color: #ff6b6b;
-    color: white;
-    font-weight: bold;
-    padding: 4px;
-    border-radius: 4px;
-}
-
-.fail {
-    color: red;
-    font-weight: bold;
-}
-
+            background-color: #ff3d00;
+            color: white;
+            font-weight: bold;
+            padding: 4px;
+            border-radius: 4px;
+        }
+        
+        .fail {
+            color: red;
+            font-weight: bold;
+        }
+        
     </style>
 </head>
 <body>
@@ -397,14 +451,19 @@ let backlogs = {};
 
 document.getElementById('semester').addEventListener('change', function () {
     const semester = this.value;
+    const studentSelect = document.getElementById('student');
+    const registerNo = studentSelect.value;
     const subjectsList = document.getElementById('subjectsList');
     subjectsList.innerHTML = '';
 
-    if (semester) {
+    if (semester && registerNo) {
         let allSubjects = subjectsData[semester] || [];
 
-        if (backlogs[semester]) {
-            allSubjects.push(...backlogs[semester].filter(sub => 
+        const allBacklogs = JSON.parse(localStorage.getItem("backlogs")) || {};
+        const studentBacklogs = allBacklogs[registerNo] || {};
+
+        if (studentBacklogs[semester]) {
+            allSubjects.push(...studentBacklogs[semester].filter(sub =>
                 !allSubjects.some(s => s.name === sub.name)
             ));
         }
@@ -413,30 +472,31 @@ document.getElementById('semester').addEventListener('change', function () {
             const div = document.createElement('div');
             div.classList.add('subject-item');
 
-            let inputFields = `
-                <label for="${subject.name}">${subject.name}</label>
-                <div>`;
+            let label = `<label for="${subject.name}">${subject.name}`;
+            if (subject.type === "Practical Only") label += " (Practical Only)";
+            label += "</label>";
+
+            let inputFields = `${label}<div>`;
 
             if (subject.internalOnly) {
                 inputFields += `
-                    <input type="number" name="internal_marks_${subject.name}" id="internal_marks_${subject.name}" required step="1" min="0" max="50" placeholder="Internal Marks">
+                    <input type="text" name="internal_marks_${subject.name}" id="internal_marks_${subject.name}" required placeholder="Internal Marks">
                     <input type="number" name="credits_${subject.name}" id="credits_${subject.name}" required step="1" min="0" max="26" placeholder="Credits">
                 `;
             } else {
                 inputFields += `
-                    <input type="number" name="marks_${subject.name}" id="marks_${subject.name}" required step="1" min="0" max="100" placeholder="Marks">
-                    <input type="number" name="internal_marks_${subject.name}" id="internal_marks_${subject.name}" required step="1" min="0" max="300" placeholder="Internal Marks">
+                    <input type="text" name="marks_${subject.name}" id="marks_${subject.name}" required placeholder="Marks">
+                    <input type="text" name="internal_marks_${subject.name}" id="internal_marks_${subject.name}" required placeholder="Internal Marks">
                     <input type="number" name="credits_${subject.name}" id="credits_${subject.name}" required step="1" min="0" max="26" placeholder="Credits">
                 `;
             }
 
             if ((semester === "5" && subject.practicalTotalMarks) || 
-    (semester === "6" && backlogs[6]?.some(sub => sub.name === subject.name && sub.type === "Practical Only"))) {
-    inputFields += `
-        <input type="number" name="practical_marks_${subject.name}" id="practical_marks_${subject.name}" required step="1" min="0" max="100" placeholder="Practical Marks">
-    `;
-}
-
+                (semester === "6" && backlogs[6]?.some(sub => sub.name === subject.name && sub.type === "Practical Only"))) {
+                inputFields += `
+                    <input type="text" name="practical_marks_${subject.name}" id="practical_marks_${subject.name}" required placeholder="Practical Marks">
+                `;
+            }
 
             inputFields += `</div>`;
             div.innerHTML = inputFields;
@@ -448,7 +508,6 @@ document.getElementById('semester').addEventListener('change', function () {
             subjectsList.appendChild(div);
         });
 
-        // Add single Ci x Gi input field for the semester
         const ciGiDiv = document.createElement('div');
         ciGiDiv.innerHTML = `
             <label for="ci_gi_semester">Total Ci x Gi</label>
@@ -458,46 +517,50 @@ document.getElementById('semester').addEventListener('change', function () {
     }
 });
 
+function parseMark(value) {
+    return value.trim().toUpperCase() === "AB" ? 0 : parseInt(value, 10) || 0;
+}
 
+function parseMarkDisplay(value) {
+    return value.trim().toUpperCase() === "AB" ? { mark: 0, display: "AB", isAbsent: true } : { mark: parseInt(value, 10) || 0, display: value, isAbsent: false };
+}
 
-    // Sample function to add a new student to local storage
-    function addStudentToLocalStorage(student) {
-        let students = JSON.parse(localStorage.getItem('students')) || [];
-        students.push(student);
-        localStorage.setItem('students', JSON.stringify(students));
+function addStudentToLocalStorage(student) {
+    let students = JSON.parse(localStorage.getItem('students')) || [];
+    students.push(student);
+    localStorage.setItem('students', JSON.stringify(students));
+}
 
-    }
+function populateStudentDropdown() {
+    const studentSelect = document.getElementById('student');
+    let students = JSON.parse(localStorage.getItem('students')) || [];
 
-    // Function to populate the student dropdown
-    function populateStudentDropdown() {
-        const studentSelect = document.getElementById('student');
-        let students = JSON.parse(localStorage.getItem('students')) || [];
-        
-        students.forEach(student => {
-            const option = document.createElement('option');
-            option.value = student.registerNo;
-            option.textContent = `${student.name} (${student.registerNo})`;
-            studentSelect.appendChild(option);
-        });
-    }
+    students.forEach(student => {
+        const option = document.createElement('option');
+        option.value = student.registerNo;
+        option.textContent = `${student.name} (${student.registerNo})`;
+        studentSelect.appendChild(option);
+    });
 
-    // Call populateStudentDropdown on page load
-    window.onload = function() {
-        populateStudentDropdown();
-        loadStoredResults();
-    };
+    studentSelect.addEventListener('change', function () {
+        const registerNo = this.value;
+        const allBacklogs = JSON.parse(localStorage.getItem("backlogs")) || {};
+        backlogs = allBacklogs[registerNo] || {};
 
-    // Handle form submission for results
-    // Define Credit Applied values for each semester
-    const creditAppliedValues = {
-    1: 18,
-    2: 22,
-    3: 26,
-    4: 26,
-    5: 24,
-    6: 16
+        // Refresh subjects when student changes
+        const semesterSelect = document.getElementById('semester');
+        if (semesterSelect.value) {
+            semesterSelect.dispatchEvent(new Event('change'));
+        }
+    });
+}
+
+window.onload = function () {
+    populateStudentDropdown();
+    loadStoredResults();
 };
 
+const creditAppliedValues = { 1: 18, 2: 22, 3: 26, 4: 26, 5: 24, 6: 16 };
 const semesterMaxMarks = { "1": 450, "2": 550, "3": 550, "4": 450, "5": 400, "6": 550 };
 
 function getGradePoint(marks, totalMarks) {
@@ -512,7 +575,6 @@ function getGradePoint(marks, totalMarks) {
     return 0;
 }
 
-// Convert numerical grade point to letter grade
 function getLetterGrade(gradePoint) {
     if (gradePoint === 10) return "A+";
     if (gradePoint === 9) return "A";
@@ -521,10 +583,9 @@ function getLetterGrade(gradePoint) {
     if (gradePoint === 6) return "C+";
     if (gradePoint === 5) return "C";
     if (gradePoint === 4) return "D";
-    return "F";  // Fail
+    return "F";
 }
 
-// Handle form submission for results
 document.getElementById('resultForm').addEventListener('submit', function (e) {
     e.preventDefault();
 
@@ -554,52 +615,63 @@ document.getElementById('resultForm').addEventListener('submit', function (e) {
     let practicalGradePointsForSubjects = [];
 
     subjects.forEach((subject) => {
-        const internalMarks = parseInt(document.getElementById(`internal_marks_${subject.name}`)?.value, 10) || 0;
-        const credits = subject.credits;
+        const internalInput = document.getElementById(`internal_marks_${subject.name}`)?.value || "0";
+        const creditInput = document.getElementById(`credits_${subject.name}`);
+const credits = creditInput ? parseInt(creditInput.value, 10) || 0 : 0;
+
+
+        const internalParsed = parseMarkDisplay(internalInput);
+        const internalMarks = internalParsed.mark;
+
         let marks = 0;
-        let practicalMarks = 0;
         let marksDisplay = "-";
+        let practicalMarks = 0;
+        let practicalDisplay = "-";
         let gradePoint = "-";
         let practicalGradePoint = "-";
 
         if (subject.internalOnly) {
             gradePoint = getGradePoint(internalMarks, subject.totalMarks);
+            marksDisplay = internalParsed.display;
         } else {
-            marks = parseInt(document.getElementById(`marks_${subject.name}`)?.value, 10) || 0;
-            marksDisplay = marks;
+            const marksInput = document.getElementById(`marks_${subject.name}`)?.value || "0";
+            const marksParsed = parseMarkDisplay(marksInput);
+            marks = marksParsed.mark;
+            marksDisplay = marksParsed.display;
+
             gradePoint = getGradePoint(marks, subject.totalMarks);
 
-            // Handling 5th Semester Practical Marks
             if (semester === "5" && subject.practicalTotalMarks) {
-                practicalMarks = parseInt(document.getElementById(`practical_marks_${subject.name}`)?.value, 10) || 0;
-                marksDisplay = `${marks} + ${practicalMarks}`;
+                const practicalInput = document.getElementById(`practical_marks_${subject.name}`)?.value || "0";
+                const practicalParsed = parseMarkDisplay(practicalInput);
+                practicalMarks = practicalParsed.mark;
+                practicalDisplay = practicalParsed.display;
+
+                marksDisplay = `${marksParsed.display} + ${practicalDisplay}`;
                 practicalGradePoint = getGradePoint(practicalMarks, subject.practicalTotalMarks);
+            }
+
+            if (marks < subject.passingMarks || marksParsed.isAbsent) {
+                result = "Fail";
+                failedSubjects.push(subject.name);
+            }
+
+            if (semester === "5" && subject.practicalTotalMarks && (practicalMarks < subject.passingMarks || practicalDisplay === "AB")) {
+                result = "Fail";
+                failedPracticalSubjects.push(subject.name);
             }
         }
 
         totalMarks += marks + internalMarks + practicalMarks;
         totalCredits += credits;
 
-        // Check for subject failure
-        if (!subject.internalOnly && marks < subject.passingMarks) {
-            result = "Fail";
-            failedSubjects.push(subject.name);
-        }
-
-        // Check for practical failure in 5th semester
-        if (semester === "5" && subject.practicalTotalMarks && practicalMarks < subject.passingMarks) {
-            result = "Fail";
-            failedPracticalSubjects.push(subject.name);
-        }
-
         marksForSubjects.push(marksDisplay);
-        internalMarksForSubjects.push(internalMarks);
-        practicalMarksForSubjects.push(practicalMarks);
+        internalMarksForSubjects.push(internalParsed.display);
+        practicalMarksForSubjects.push(practicalDisplay);
         gradePointsForSubjects.push(getLetterGrade(gradePoint));
         practicalGradePointsForSubjects.push(practicalGradePoint === "-" ? "-" : getLetterGrade(practicalGradePoint));
     });
 
-    // Compute SGPA, CGPA, Percentage, and Classification
     let sgpa = totalCiGi / creditApplied;
     sgpa = Math.min(sgpa, 10);
     let cgpa = sgpa;
@@ -610,34 +682,46 @@ document.getElementById('resultForm').addEventListener('submit', function (e) {
                          percentage >= 50 ? "Second Class" :
                          percentage >= 40 ? "Pass" : "Fail";
 
-    // Handle Backlogs
     if (result === "Fail") {
+        let allBacklogs = JSON.parse(localStorage.getItem("backlogs")) || {};
+        if (!allBacklogs[registerNo]) allBacklogs[registerNo] = {};
+
         const nextSemester = parseInt(semester) + 1;
-        if (!backlogs[nextSemester]) {
-            backlogs[nextSemester] = [];
-        }
-        
-        // Add failed theory subjects to backlog
+        if (!allBacklogs[registerNo][nextSemester]) allBacklogs[registerNo][nextSemester] = [];
+
         failedSubjects.forEach(failedSubjectName => {
             const failedSubject = subjectsData[semester].find(sub => sub.name === failedSubjectName);
-            if (failedSubject && !backlogs[nextSemester].some(sub => sub.name === failedSubject.name)) {
-                backlogs[nextSemester].push(failedSubject);
+            const exists = allBacklogs[registerNo][nextSemester].some(sub => sub.name === failedSubject.name);
+            if (failedSubject && !exists) {
+                allBacklogs[registerNo][nextSemester].push(failedSubject);
             }
         });
 
-        // Handle 5th semester practical failures
         if (semester === "5") {
+            if (!allBacklogs[registerNo][6]) allBacklogs[registerNo][6] = [];
+
             failedPracticalSubjects.forEach(failedSubjectName => {
                 const failedSubject = subjectsData[semester].find(sub => sub.name === failedSubjectName);
-                if (failedSubject && !backlogs[6].some(sub => sub.name === failedSubject.name)) {
-                    backlogs[6].push({
-                        ...failedSubject,
-                        type: "Practical Only" // Mark it as a practical backlog
+                const exists = allBacklogs[registerNo][6].some(sub => sub.name === failedSubject.name && sub.type === "Practical Only");
+                if (failedSubject && !exists) {
+                    allBacklogs[registerNo][6].push({
+                        name: failedSubject.name,
+                        totalMarks: failedSubject.totalMarks,
+                        passingMarks: failedSubject.passingMarks,
+                        credits: failedSubject.credits,
+                        practicalTotalMarks: failedSubject.practicalTotalMarks,
+                        type: "Practical Only"
                     });
                 }
             });
         }
+
+        localStorage.setItem("backlogs", JSON.stringify(allBacklogs));
     }
+
+    // TODO: Save result to table and localStorage (if not done already)
+
+
 
     const newEntry = {
         registerNo, studentName, semester, totalMarks,
